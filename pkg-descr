@@ -1,4 +1,12 @@
-Feathercoin is built on Bitcoin's open source software. One of Feathercoins's biggest advantages is the Scrypt based hashing algorithm. This offers a different solution to Bitcoin which uses a SHA-256 based hashing algorithm. Scrypt is the only viable solution for GPU miners as Bitcoin mining is now dominated by professional ASIC mining hardware. ASIC mining hardware is expensive, but outperforms GPU hardware for mining Bitcoin greatly. Scrypt based Feathercoin is safe guarded from the effects of current ASIC mining hardware.
+Feathercoin is built on Bitcoin's open source software. One 
+of Feathercoins's biggest advantages is the Scrypt based hashing 
+algorithm. This offers a different solution to Bitcoin which uses 
+a SHA-256 based hashing algorithm. Scrypt is the only viable 
+solution for GPU miners as Bitcoin mining is now dominated by 
+professional ASIC mining hardware. ASIC mining hardware is 
+expensive, but outperforms GPU hardware for mining Bitcoin 
+greatly. Scrypt based Feathercoin is safe guarded from the 
+effects of current ASIC mining hardware.
 
 * 200 Coin reward per block
 * 336 million coins total
