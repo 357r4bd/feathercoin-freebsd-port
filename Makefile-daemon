@@ -1,0 +1,9 @@
+# $FreeBSD: net-p2p/feathercoin-daemon/Makefile 338384 2014-01-01 17:54:26Z swills $
+
+PKGNAMESUFFIX=	-daemon
+COMMENT=	Virtual Peer-to-Peer Currency Software
+MASTERDIR=	${.CURDIR}/../feathercoin
+DESCR=		${MASTERDIR}/pkg-descr
+SLAVE_PORT=	yes
+OPTIONS_EXCLUDE=	GUI QRCODES
+.include "${MASTERDIR}/Makefile"
