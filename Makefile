@@ -1,4 +1,4 @@
-# Created by: Steve Wills <swills@FreeBSD.org>
+# Created by: B. Estrade <estrabd@gmail.com>
 # $FreeBSD: net-p2p/feathercoin/Makefile 340012 2014-01-17 03:53:35Z swills $
 
 PORTNAME=	feathercoin
@@ -7,7 +7,7 @@ PORTREVISION=	1
 CATEGORIES=	net-p2p finance
 
 MASTER_SITES= https://github.com/FeatherCoin/Feathercoin-${PORTVERSION}/archive/
-DISTFILES= v0.8.5.tar.gz
+DISTFILES= v${PORTVERSION}.tar.gz
 WRKSRC= ${WRKDIR}/Feathercoin-0.8.5-0.8.5/
 
 MAINTAINER= estrabd@gmail.com
