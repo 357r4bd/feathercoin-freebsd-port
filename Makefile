@@ -6,19 +6,15 @@ PORTVERSION=	0.8.5
 PORTREVISION=	1
 CATEGORIES=	net-p2p finance
 
-MASTER_SITES= https://github.com/FeatherCoin/Feathercoin-${PORTVERSION}/archive/
-DISTFILES= v${PORTVERSION}.tar.gz
-WRKSRC= ${WRKDIR}/Feathercoin-0.8.5-0.8.5/
-
 MAINTAINER= estrabd@gmail.com
-
 COMMENT=	Virtual Peer-to-Peer Currency Software
 
 LIB_DEPENDS=	libboost_date_time.so:${PORTSDIR}/devel/boost-libs
 
 USE_GITHUB= yes
 GH_ACCOUNT= FeatherCoin
-GH_COMMIT=  280d6c05835af9490277d5853a6f14a8474ac530
+GH_PROJECT= Feathercoin-0.8.5
+GH_COMMIT=  280d6c0
 GH_TAGNAME= v${PORTVERSION}
 
 USE_OPENSSL=	yes
