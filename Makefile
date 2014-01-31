@@ -88,18 +88,18 @@ do-configure:
 		USE_UPNP=${QMAKE_USE_UPNP} \
 		USE_QRCODE=${QMAKE_USE_QRCODE} \
 		USE_DBUS=${QMAKE_USE_DBUS} \
-		bitcoin-qt.pro
+		feathercoin-qt.pro
 .endif
 
 do-install:
 .if ${PORT_OPTIONS:MGUI} && !defined(WITHOUT_X11)
 	${INSTALL_PROGRAM} ${WRKSRC}/${BINARY} ${STAGEDIR}${PREFIX}/bin/
 	${REINPLACE_CMD} -e 's,=/usr,=${PREFIX},' \
-		-e 's,bitcoin,feathercoin,g' \
+		-e 's,feathercoin,feathercoin,g' \
 		-e 's,Bitcoin,Litecoin,g' \
-		-e 's,128,64,g' ${WRKSRC}/contrib/debian/bitcoin-qt.desktop
-	${INSTALL} ${WRKSRC}/contrib/debian/bitcoin-qt.desktop ${STAGEDIR}${PREFIX}/share/applications/feathercoin-qt.desktop
-	${INSTALL} ${WRKSRC}/share/pixmaps/bitcoin64.png ${STAGEDIR}${PREFIX}/share/pixmaps/feathercoin64.png
+		-e 's,128,64,g' ${WRKSRC}/contrib/debian/feathercoin-qt.desktop
+	${INSTALL} ${WRKSRC}/contrib/debian/feathercoin-qt.desktop ${STAGEDIR}${PREFIX}/share/applications/feathercoin-qt.desktop
+	${INSTALL} ${WRKSRC}/share/pixmaps/feathercoin64.png ${STAGEDIR}${PREFIX}/share/pixmaps/feathercoin64.png
 .else
 	${INSTALL_PROGRAM} ${WRKSRC}/src/${BINARY} ${STAGEDIR}${PREFIX}/bin/
 .endif
