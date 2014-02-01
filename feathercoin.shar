@@ -1,0 +1,262 @@
+# This is a shell archive.  Save it in a file, remove anything before
+# this line, and then unpack it by entering "sh file".  Note, it may
+# create directories; files and directories will be owned by you and
+# have default permissions.
+#
+# This archive contains:
+#
+#	feathercoin
+#	feathercoin/files
+#	feathercoin/files/extra-patch-endian
+#	feathercoin/files/patch-src-makefile.unix
+#	feathercoin/Makefile
+#	feathercoin/distinfo
+#	feathercoin/pkg-descr
+#	feathercoin/Makefile-daemon
+#
+echo c - feathercoin
+mkdir -p feathercoin > /dev/null 2>&1
+echo c - feathercoin/files
+mkdir -p feathercoin/files > /dev/null 2>&1
+echo x - feathercoin/files/extra-patch-endian
+sed 's/^X//' >feathercoin/files/extra-patch-endian << 'e4230e032f0d534c55e4441d0c84b23f'
+X--- src/scrypt.cpp.orig	2013-12-09 18:10:12.046606050 +0000
+X+++ src/scrypt.cpp	2013-12-09 18:10:25.898605023 +0000
+X@@ -34,22 +34,6 @@
+X #include <string.h>
+X #include <openssl/sha.h>
+X 
+X-static inline uint32_t be32dec(const void *pp)
+X-{
+X-	const uint8_t *p = (uint8_t const *)pp;
+X-	return ((uint32_t)(p[3]) + ((uint32_t)(p[2]) << 8) +
+X-	    ((uint32_t)(p[1]) << 16) + ((uint32_t)(p[0]) << 24));
+X-}
+X-
+X-static inline void be32enc(void *pp, uint32_t x)
+X-{
+X-	uint8_t *p = (uint8_t *)pp;
+X-	p[3] = x & 0xff;
+X-	p[2] = (x >> 8) & 0xff;
+X-	p[1] = (x >> 16) & 0xff;
+X-	p[0] = (x >> 24) & 0xff;
+X-}
+X-
+X typedef struct HMAC_SHA256Context {
+X 	SHA256_CTX ictx;
+X 	SHA256_CTX octx;
+X--- src/scrypt.h.orig	2013-12-09 15:26:17.343282984 +0000
+X+++ src/scrypt.h	2013-12-09 15:45:11.032205545 +0000
+X@@ -17,19 +17,4 @@
+X PBKDF2_SHA256(const uint8_t *passwd, size_t passwdlen, const uint8_t *salt,
+X     size_t saltlen, uint64_t c, uint8_t *buf, size_t dkLen);
+X 
+X-static inline uint32_t le32dec(const void *pp)
+X-{
+X-        const uint8_t *p = (uint8_t const *)pp;
+X-        return ((uint32_t)(p[0]) + ((uint32_t)(p[1]) << 8) +
+X-            ((uint32_t)(p[2]) << 16) + ((uint32_t)(p[3]) << 24));
+X-}
+X-
+X-static inline void le32enc(void *pp, uint32_t x)
+X-{
+X-        uint8_t *p = (uint8_t *)pp;
+X-        p[0] = x & 0xff;
+X-        p[1] = (x >> 8) & 0xff;
+X-        p[2] = (x >> 16) & 0xff;
+X-        p[3] = (x >> 24) & 0xff;
+X-}
+X #endif
+e4230e032f0d534c55e4441d0c84b23f
+echo x - feathercoin/files/patch-src-makefile.unix
+sed 's/^X//' >feathercoin/files/patch-src-makefile.unix << '086e1c7d09eb0db5f712e4e5a56a69f5'
+X--- src/makefile.unix.orig	2012-07-26 07:55:22.000000000 +0000
+X+++ src/makefile.unix	2013-05-30 03:57:45.000000000 +0000
+X@@ -6,6 +6,11 @@
+X 
+X DEFS=-DUSE_IPV6 -DBOOST_SPIRIT_THREADSAFE
+X 
+X+BOOST_INCLUDE_PATH=%%LOCALBASE%%/include
+X+BDB_INCLUDE_PATH=%%LOCALBASE%%/include/db48
+X+BOOST_LIB_PATH=%%LOCALBASE%%/lib
+X+BDB_LIB_PATH=%%LOCALBASE%%/lib/db48
+X+
+X DEFS += $(addprefix -I,$(CURDIR) $(CURDIR)/obj $(BOOST_INCLUDE_PATH) $(BDB_INCLUDE_PATH) $(OPENSSL_INCLUDE_PATH))
+X LIBS = $(addprefix -L,$(BOOST_LIB_PATH) $(BDB_LIB_PATH) $(OPENSSL_LIB_PATH))
+X 
+X@@ -38,6 +43,7 @@
+X    -l boost_filesystem$(BOOST_LIB_SUFFIX) \
+X    -l boost_program_options$(BOOST_LIB_SUFFIX) \
+X    -l boost_thread$(BOOST_LIB_SUFFIX) \
+X+   -l boost_chrono$(BOOST_LIB_SUFFIX) \
+X    -l db_cxx$(BDB_LIB_SUFFIX) \
+X    -l ssl \
+X    -l crypto
+X@@ -61,7 +67,6 @@
+X LIBS+= \
+X  -Wl,-B$(LMODE2) \
+X    -l z \
+X-   -l dl \
+X    -l pthread
+086e1c7d09eb0db5f712e4e5a56a69f5
+echo x - feathercoin/Makefile
+sed 's/^X//' >feathercoin/Makefile << '0d598e5bb72d7d2a9ee3a24147573076'
+X# Created by: B. Estrade <estrabd@gmail.com>
+X# $FreeBSD: net-p2p/feathercoin/Makefile 340012 2014-01-17 03:53:35Z swills $
+X
+XPORTNAME=	feathercoin
+XPORTVERSION=	0.8.5
+XPORTREVISION=	1
+XCATEGORIES=	net-p2p finance
+X
+XMAINTAINER= estrabd@gmail.com
+XCOMMENT=	Virtual Peer-to-Peer Currency Software
+X
+XLIB_DEPENDS=	libboost_date_time.so:${PORTSDIR}/devel/boost-libs
+X
+XUSE_GITHUB= yes
+XGH_ACCOUNT= FeatherCoin
+XGH_PROJECT= Feathercoin-0.8.5
+XGH_COMMIT=  280d6c0
+XGH_TAGNAME= v${PORTVERSION}
+X
+XUSE_OPENSSL=	yes
+XUSE_BDB=	yes
+XWANT_BDB_VER=	48
+X
+XUSES=		gmake
+X
+XOPTIONS_DEFINE=	GUI UPNP QRCODES DBUS
+XOPTIONS_DEFAULT=	GUI QRCODES
+X
+XGUI_DESC=	Build as a QT4 GUI
+XUPNP_DESC=	Build with UPNP support
+XQRCODES_DESC=	Build with QR code display
+XDBUS_DESC=	Build with DBUS support
+X
+XCXXFLAGS+=	-I${LOCALBASE}/include -I${BDB_INCLUDE_DIR}
+XCXXFLAGS+=	-L${LOCALBASE}/lib -L${BDB_LIB_DIR}
+X
+X.include <bsd.port.options.mk>
+X
+X.if ${PORT_OPTIONS:MUPNP}
+XLIB_DEPENDS+=	libminiupnpc.so:${PORTSDIR}/net/miniupnpc
+XQMAKE_USE_UPNP=	1
+X.else
+XQMAKE_USE_UPNP=	-
+X.endif
+X
+X.if ${PORT_OPTIONS:MGUI} && !defined(WITHOUT_X11)
+XUSE_QT4=	qmake_build linguist uic moc rcc
+XBINARY=		feathercoin-qt
+X.else
+XBINARY=		feathercoind
+XMAKEFILE=	makefile.unix
+XALL_TARGET=	${BINARY}
+XMAKE_ARGS+=	-C ${WRKSRC}/src USE_UPNP=${QMAKE_USE_UPNP}
+X.endif
+X
+XPLIST_FILES=	bin/${BINARY}
+X
+X.if ${PORT_OPTIONS:MGUI} && !defined(WITHOUT_X11) && ${PORT_OPTIONS:MQRCODES}
+XLIB_DEPENDS+=	libqrencode.so:${PORTSDIR}/graphics/libqrencode
+XQMAKE_USE_QRCODE=1
+X.else
+XQMAKE_USE_QRCODE=0
+X.endif
+X
+X.if ${PORT_OPTIONS:MDBUS}
+XUSE_QT4+=	dbus
+XQMAKE_USE_DBUS=	1
+X.else
+XQMAKE_USE_DBUS=	0
+X.endif
+X
+X.include <bsd.port.pre.mk>
+X
+X.if ${PORT_OPTIONS:MGUI} && !defined(WITHOUT_X11)
+XPLIST_FILES+=	share/applications/feathercoin-qt.desktop share/pixmaps/feathercoin64.png
+X.endif
+X
+X.if ${OSVERSION} >= 1000000
+XEXTRA_PATCHES+=	${FILESDIR}/extra-patch-endian
+X.endif
+X
+Xdo-configure:
+X.if ${PORT_OPTIONS:MGUI} && !defined(WITHOUT_X11)
+X	cd ${BUILD_WRKSRC} && \
+X		${QMAKE} ${QMAKE_ARGS} \
+X		QMAKE_LIBDIR+=${BDB_LIB_DIR} \
+X		QMAKE_LRELEASE=${LRELEASE} \
+X		USE_UPNP=${QMAKE_USE_UPNP} \
+X		USE_QRCODE=${QMAKE_USE_QRCODE} \
+X		USE_DBUS=${QMAKE_USE_DBUS} \
+X		feathercoin-qt.pro
+X.endif
+X
+Xdo-install:
+X.if ${PORT_OPTIONS:MGUI} && !defined(WITHOUT_X11)
+X	${INSTALL_PROGRAM} ${WRKSRC}/${BINARY} ${STAGEDIR}${PREFIX}/bin/
+X	${REINPLACE_CMD} -e 's,=/usr,=${PREFIX},' \
+X		-e 's,feathercoin,feathercoin,g' \
+X		-e 's,Bitcoin,Litecoin,g' \
+X		-e 's,128,64,g' ${WRKSRC}/contrib/debian/feathercoin-qt.desktop
+X	${INSTALL} ${WRKSRC}/contrib/debian/feathercoin-qt.desktop ${STAGEDIR}${PREFIX}/share/applications/feathercoin-qt.desktop
+X	${INSTALL} ${WRKSRC}/share/pixmaps/feathercoin64.png ${STAGEDIR}${PREFIX}/share/pixmaps/feathercoin64.png
+X.else
+X	${INSTALL_PROGRAM} ${WRKSRC}/src/${BINARY} ${STAGEDIR}${PREFIX}/bin/
+X.endif
+X
+Xpost-patch:
+X	@${REINPLACE_CMD} -e 's|%%LOCALBASE%%|${LOCALBASE}|' ${WRKSRC}/src/makefile.unix
+X
+Xregression-test:
+X.if !${PORT_OPTIONS:MGUI} || defined(WITHOUT_X11)
+X	@${GMAKE} -C ${WRKSRC}/src -f makefile.unix USE_UPNP=${QMAKE_USE_UPNP} test_feathercoin
+X	(cd ${WRKSRC}/src ; ./test_feathercoin)
+X.endif
+X
+X.include <bsd.port.post.mk>
+0d598e5bb72d7d2a9ee3a24147573076
+echo x - feathercoin/distinfo
+sed 's/^X//' >feathercoin/distinfo << '2b555ea5a226dcea345a4b3536f1fbcb'
+XSHA256 (feathercoin-0.8.5.tar.gz) = 3c910268a6b679d2d334b9099617a634f588cca3ede5a8bc35c41d4fe37042b2
+XSIZE (feathercoin-0.8.5.tar.gz) = 3663097
+2b555ea5a226dcea345a4b3536f1fbcb
+echo x - feathercoin/pkg-descr
+sed 's/^X//' >feathercoin/pkg-descr << '7801e23b750f11682a7eac2744077025'
+XFeathercoin is built on Bitcoin's open source software. One 
+Xof Feathercoins's biggest advantages is the Scrypt based hashing 
+Xalgorithm. This offers a different solution to Bitcoin which uses 
+Xa SHA-256 based hashing algorithm. Scrypt is the only viable 
+Xsolution for GPU miners as Bitcoin mining is now dominated by 
+Xprofessional ASIC mining hardware. ASIC mining hardware is 
+Xexpensive, but outperforms GPU hardware for mining Bitcoin 
+Xgreatly. Scrypt based Feathercoin is safe guarded from the 
+Xeffects of current ASIC mining hardware.
+X
+X* 200 Coin reward per block
+X* 336 million coins total
+X* Default Feathercoin network port is 9336
+X* Default RPC mining port is 9337
+X* Block target is 2.5 minutes
+X* Difficulty changes every 126 blocks with 504 block sampling and .25 damping
+X* ~9% Maximum difficulty adjust
+X* Block reward halves every 840,000 blocks
+X
+XWWW: http://www.feathercoin.com/about/
+7801e23b750f11682a7eac2744077025
+echo x - feathercoin/Makefile-daemon
+sed 's/^X//' >feathercoin/Makefile-daemon << '48571c9d2f8f1bae0bf61930d821df6f'
+X# $FreeBSD: net-p2p/feathercoin-daemon/Makefile 338384 2014-01-01 17:54:26Z swills $
+X
+XPKGNAMESUFFIX=	-daemon
+XCOMMENT=	Virtual Peer-to-Peer Currency Software
+XMASTERDIR=	${.CURDIR}/../feathercoin
+XDESCR=		${MASTERDIR}/pkg-descr
+XSLAVE_PORT=	yes
+XOPTIONS_EXCLUDE=	GUI QRCODES
+X.include "${MASTERDIR}/Makefile"
+48571c9d2f8f1bae0bf61930d821df6f
+exit
+
